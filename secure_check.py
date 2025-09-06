@@ -267,7 +267,7 @@ elif q == "❓Queries":
                     SELECT 
                         VIOLATION_RAW,
                         COUNT(*) AS TOTAL_STOPS,
-                        SUM(CASE WHEN STOP_OUTCOME = 'SEARCH' THEN 1 ELSE 0 END) AS SEARCHES,
+                        SUM(CASE WHEN SEARCH_CONDUCTED = 1 THEN 1 ELSE 0 END) AS SEARCHES,
                         SUM(CASE WHEN STOP_OUTCOME = 'ARREST' THEN 1 ELSE 0 END) AS ARRESTS
                     FROM DB1.SECURE_CHECK
                     GROUP BY VIOLATION_RAW
@@ -304,26 +304,22 @@ elif q == "❓Queries":
     query_type = st.sidebar.radio("Select Query Type", list(query_groups.keys()))
 
 
-    category = st.sidebar.radio(
-        "Choose Category",
-        ["Select category"] + list(query_groups[query_type].keys())
-    )
-    
-    
+    category = st.sidebar.radio("Choose Category",["Select category"] + list(query_groups[query_type].keys()))
+        
     if category != "Select category":
-        Query = st.selectbox(
-            "Choose Query",
-            ["Select Query"] + list(query_groups[query_type][category].keys())
-        )
+        Query = st.selectbox("Choose Query", ["Select Query"] + list(query_groups[query_type][category].keys()))
+            
     else:
         Query = "Select Query"
+        
     
     
     if Query != "Select Query":
         Qus = query_groups[query_type][category][Query]
         data = pd.read_sql(Qus, connection)
         st.write(f"### {Query}")
-        st.dataframe(data, use_container_width=True)
+        st.dataframe(data, use_container_width=True)        
+    
                     
 elif q == "🔍Prediction":
     st.title("🚦 SecureCheck Prediction 🔍")
@@ -374,7 +370,11 @@ elif q == "🔍Prediction":
     ⏰ The stop lasted **{STOP_DURATION}**, during which {search_text} and it {drug_text}.  
     
     📄 **Predicted Outcome:** **{predicted_outcome}**
-    """)
+    """)   
+    
+    
+    
+    
     
 
 
